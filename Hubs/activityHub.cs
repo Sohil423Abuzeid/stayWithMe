@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace stayWithMeApi.Services
+namespace stayWithMeApi.Hubs
 {
     public class activityHub :Hub
     {

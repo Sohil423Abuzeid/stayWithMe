@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using stayWithMeApi.Models;
+using stayWithMeApi.Hubs;
 using System.IdentityModel.Tokens.Jwt;
 using stayWithMeApi.Services;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using stayWithMeApi.Hubs;
 
 namespace stayWithMeApi
 {
@@ -69,7 +71,11 @@ namespace stayWithMeApi
             ClockSkew = TimeSpan.Zero
         };
     });
-
+            builder.Services.AddScoped<OtpService>();
+            builder.Services.AddScoped<PaymentService>();
+            builder.Services.AddScoped<StorageService>();
+            builder.Services.AddScoped<UsersService>();
+            builder.Services.AddScoped<AuthService>();
             builder.Services.AddAuthorization();
 
             builder.Services.AddCors(options =>

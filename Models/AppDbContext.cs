@@ -37,5 +37,7 @@ namespace stayWithMeApi.Models
 
         public DbSet<Effect> Effects { get; set; }
 
+        public DbSet<otpRequest> otpRequests { get; set; }
+
     }
 }
