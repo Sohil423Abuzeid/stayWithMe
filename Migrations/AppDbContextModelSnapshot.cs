@@ -71,7 +71,7 @@ namespace stayWithMeApi.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -95,9 +95,15 @@ namespace stayWithMeApi.Migrations
 
                     b.Property<string>("userName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("userName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -119,6 +125,33 @@ namespace stayWithMeApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FriendRequests");
+                });
+
+            modelBuilder.Entity("stayWithMeApi.Models.otpRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Otp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("checkedCounter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("otpType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("otpRequests");
                 });
 
             modelBuilder.Entity("UserUsers", b =>

@@ -1,13 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using stayWithMeApi.DTOS;
 using stayWithMeApi.Models;
-using stayWithMeApi.Enums;
-using Org.BouncyCastle.Crypto.Generators;
 namespace stayWithMeApi.Services
 {
-    public class UsersService(AppDbContext dbContext,AuthService authService,StorageService storageService,OtpService otpService)
+    public class UsersService(AppDbContext dbContext,StorageService storageService,OtpService otpService)
     {
-        public async Task<bool> checkUserName(string userName)
+        public async Task<bool> checkUserNameAsync(string userName)
         {
             try
             {
@@ -23,7 +20,7 @@ namespace stayWithMeApi.Services
                 throw;
             }
         }
-        public async Task<bool> checkUserEmail(string userEmail)
+        public async Task<bool> checkUserEmailAsync(string userEmail)
         {
             try
             {
@@ -39,38 +36,54 @@ namespace stayWithMeApi.Services
                 throw;
             }
         }
-        public async Task<bool> register(RegisterDto registerDto )
+        public async Task<List<int>> friendsIDsAsync(int userID)
         {
-
             try
             {
-                bool emailFound  = await checkUserEmail(registerDto.Email);
-                if (emailFound) throw new Exception("this email used");
+                var user = await dbContext.Users.Include(u => u.Friends).Where(u=> u.Id== userID).FirstOrDefaultAsync(); 
+                if(user == null) return(new List<int>());
 
-                bool otp = await otpService.checkRequestAsync(registerDto.otp, registerDto.Email, otpType.verificationEmail);
-                if (!otp) throw new Exception("otp expired");
-
-                string imageUrl = await storageService.uploadImage(registerDto.formFile);
-
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
-
-                var user = new User
-                {
-                    Name = registerDto.Name,
-                    Email = registerDto.Email,
-                    hashedPassword = hashedPassword,
-                    userName =registerDto.userName,
-                    imageUrl = imageUrl,
-                    birthDate = registerDto.birthDate,
-                };
-                dbContext.Users.Add(user);
-                await dbContext.SaveChangesAsync();
-                return true;
+                List<int> ids = user.Friends.Select(user => user.Id).ToList();
+            
+                return ids ;
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
+        public async Task<List<string>> strFriendsIDsAsync(int userID)
+        {
+            try
+            {
+                var user = await dbContext.Users.Include(u => u.Friends).Where(u => u.Id == userID).FirstOrDefaultAsync();
+                if (user == null) return (new List<string>());
+
+                List<string> ids = user.Friends.Select(user => user.Id.ToString()).ToList();
+
+                return ids;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public async Task changeUserStateAsync(int userID,bool onlineState)
+        {
+            try
+            {
+                var user = await dbContext.Users.Include(u => u.Friends).Where(u => u.Id == userID).FirstOrDefaultAsync();
+
+                user.Online = onlineState;
+
+                dbContext.Users.Update(user);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

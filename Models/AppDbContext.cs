@@ -11,6 +11,8 @@ namespace stayWithMeApi.Models
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            // friends
             modelBuilder.Entity<User>()
             .HasMany(u => u.Friends)
             .WithMany()
@@ -30,6 +32,18 @@ namespace stayWithMeApi.Models
          {
             j.HasKey("UserId", "RelatedUserId");
             });
+
+
+
+
+            // user
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.userName)
+                .IsUnique();
+
         }
         public DbSet<User> Users { get; set; }
 

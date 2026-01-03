@@ -13,6 +13,6 @@
 
         public DateTime birthDate { get; set; }
 
-        public  IFormFile formFile { get; set; }
+        //public  IFormFile? formFile { get; set; }
     }
 }

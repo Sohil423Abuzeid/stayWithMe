@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using stayWithMeApi.Hubs;
+using Hangfire;
 
 namespace stayWithMeApi
 {
@@ -71,6 +72,7 @@ namespace stayWithMeApi
             ClockSkew = TimeSpan.Zero
         };
     });
+            builder.Services.AddScoped<EmailService>();
             builder.Services.AddScoped<OtpService>();
             builder.Services.AddScoped<PaymentService>();
             builder.Services.AddScoped<StorageService>();
@@ -90,6 +92,10 @@ namespace stayWithMeApi
                 });
             });
 
+            builder.Services.AddHangfire(configuration =>
+            configuration.UseSqlServerStorage(builder.Configuration.GetConnectionString("Main")));
+            builder.Services.AddHangfireServer();
+
             var app = builder.Build();
 
             app.UseCors();
@@ -100,7 +106,7 @@ namespace stayWithMeApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseHangfireDashboard();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
