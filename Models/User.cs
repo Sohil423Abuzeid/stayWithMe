@@ -20,7 +20,7 @@ namespace stayWithMeApi.Models
 
         public bool Online { get; set; } = false;
 
-        public int? brainTreeId { get; set; } // i will drain your money bro hehe
+        public string? brainTreeId { get; set; } // i will drain your money bro hehe
 
         public List<User> Friends { get; set; } = new();
 
